@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "fonts/*.woff2"],
+      includeAssets: ["favicon.svg"],
       manifest: {
         name: "Romi's English Adventure",
         short_name: "Romi's TV",
