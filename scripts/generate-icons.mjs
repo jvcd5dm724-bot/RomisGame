@@ -1,23 +1,29 @@
-// One-off dev utility: renders placeholder app icons (Streetwear Pop themed)
-// as PNGs using the pre-installed Chromium, since no image editor is available
-// here. Re-run after real artwork replaces the emoji placeholder.
+// One-off dev utility: renders app icons (Streetwear Pop themed) as PNGs
+// using the pre-installed Chromium, since no image editor is available here.
+// Uses the real raccoon illustration (src/assets/images/raccoon.svg,
+// OpenMoji CC BY-SA 4.0 — see README Credits) rather than a text emoji, so
+// the home-screen icon renders consistently instead of depending on the
+// device's own emoji font.
 import { chromium } from "@playwright/test";
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 
 const OUT_DIR = new URL("../public/icons/", import.meta.url);
 mkdirSync(OUT_DIR, { recursive: true });
 
+const raccoonSvg = readFileSync(new URL("../src/assets/images/raccoon.svg", import.meta.url), "utf8");
+const raccoonDataUri = `data:image/svg+xml;base64,${Buffer.from(raccoonSvg).toString("base64")}`;
+
 function iconHtml(size, maskable) {
-  const pad = maskable ? Math.round(size * 0.15) : 0;
+  const pad = maskable ? Math.round(size * 0.22) : Math.round(size * 0.1);
   return `<!doctype html><html><head><style>
     html,body{margin:0;padding:0;}
     .icon{width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;
       background:linear-gradient(135deg,#8b5cf6,#ff3d81);
       ${maskable ? "" : `border-radius:${Math.round(size * 0.22)}px;`}
     }
-    .emoji{font-size:${size - pad * 2}px;line-height:1;}
+    img{width:${size - pad * 2}px;height:${size - pad * 2}px;}
   </style></head><body>
-    <div class="icon"><div class="emoji">🦝</div></div>
+    <div class="icon"><img src="${raccoonDataUri}"></div>
   </body></html>`;
 }
 

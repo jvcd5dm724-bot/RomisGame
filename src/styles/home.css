@@ -39,6 +39,12 @@
   padding-bottom: 12px;
 }
 
+.guide-avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
 .channel-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -123,11 +129,14 @@
   position: fixed;
   top: calc(var(--safe-top) + 8px);
   inset-inline-start: 8px;
-  width: 44px;
-  height: 44px;
+  width: var(--touch-min);
+  height: var(--touch-min);
   border-radius: 50%;
-  background: transparent;
+  background: var(--bg-raised);
   color: var(--text-dim);
   font-size: 20px;
-  opacity: 0.6;
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

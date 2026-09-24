@@ -1,5 +1,7 @@
 import { getState } from "../state/app-store";
 import { episodes } from "../content/index";
+import { createHoldButton } from "./hold-button";
+import { contentImages } from "../content/images";
 
 interface Channel {
   id: string;
@@ -36,7 +38,17 @@ export function renderHomeScreen(navigate: (hash: string) => void): HTMLElement 
 
   const guide = document.createElement("div");
   guide.className = "guide-line";
-  guide.innerHTML = `<span>🦝🕵️</span> <span>Pick a channel!</span>`;
+  const guideAvatar = document.createElement("img");
+  guideAvatar.className = "guide-avatar";
+  guideAvatar.src = contentImages.raccoon!;
+  guideAvatar.alt = "Raccoon detective";
+  guide.appendChild(guideAvatar);
+  const guideDetective = document.createElement("span");
+  guideDetective.textContent = "🕵️";
+  guide.appendChild(guideDetective);
+  const guideText = document.createElement("span");
+  guideText.textContent = "Pick a channel!";
+  guide.appendChild(guideText);
   tv.appendChild(guide);
 
   const grid = document.createElement("div");
@@ -89,20 +101,13 @@ export function renderHomeScreen(navigate: (hash: string) => void): HTMLElement 
   progressLine.textContent = `Episodes solved: ${completedCount} / ${episodeCount}`;
   root.appendChild(progressLine);
 
-  const parentGate = document.createElement("button");
-  parentGate.className = "parent-gate-link";
-  parentGate.textContent = "⚙️";
-  parentGate.setAttribute("aria-label", "Parent settings");
-  let holdTimer: number | undefined;
-  const startHold = () => {
-    holdTimer = window.setTimeout(() => navigate("#/parent"), 3000);
-  };
-  const cancelHold = () => {
-    if (holdTimer) window.clearTimeout(holdTimer);
-  };
-  parentGate.addEventListener("pointerdown", startHold);
-  parentGate.addEventListener("pointerup", cancelHold);
-  parentGate.addEventListener("pointerleave", cancelHold);
+  const parentGate = createHoldButton({
+    className: "parent-gate-link",
+    label: "⚙️",
+    ariaLabel: "Parent settings — hold for 3 seconds",
+    holdMs: 3000,
+    onComplete: () => navigate("#/parent"),
+  });
   root.appendChild(parentGate);
 
   return root;

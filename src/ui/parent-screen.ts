@@ -4,6 +4,7 @@ import { getState, setHintMode, approveHintOverride, addSongWord } from "../stat
 import type { HebrewHint } from "../content/types";
 import { countRecordings, deleteAllRecordings } from "../audio/recordings";
 import type { HintMode } from "../progress/storage";
+import { createHomeButton } from "./home-button";
 
 interface ReviewableItem {
   id: string;
@@ -26,8 +27,13 @@ function collectReviewables(): ReviewableItem[] {
 }
 
 export function renderParentScreen(navigate: (hash: string) => void): HTMLElement {
+  const wrapper = document.createElement("div");
+  wrapper.className = "screen-shell";
+  wrapper.appendChild(createHomeButton(navigate));
+
   const root = document.createElement("div");
   root.className = "parent-screen";
+  wrapper.appendChild(root);
 
   const title = document.createElement("h1");
   title.textContent = "Parent screen";
@@ -192,5 +198,5 @@ export function renderParentScreen(navigate: (hash: string) => void): HTMLElemen
   backBtn.addEventListener("click", () => navigate("#/"));
   root.appendChild(backBtn);
 
-  return root;
+  return wrapper;
 }

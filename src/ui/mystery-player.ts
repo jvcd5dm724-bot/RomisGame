@@ -3,10 +3,12 @@ import { getWord } from "../content/index";
 import { withHintOverride } from "../content/overrides";
 import { createHintButton, type HintButtonHandle } from "./hint-button";
 import { speakEnglish } from "../audio/speech";
-import { canRecord, playBlob, startRecording, type Recorder } from "../audio/record";
-import { saveRecording } from "../audio/recordings";
 import { awardStars, getState, reviewWordResult, setEpisodeStepIndex, completeEpisode } from "../state/app-store";
 import { todayIso } from "../util/date";
+import { createHomeButton } from "./home-button";
+import { createSayItRecorder } from "./say-it-recorder";
+import { renderWordVisual } from "./word-visual";
+import { playCorrectChime, playGentleBump } from "../audio/sfx";
 
 function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr];
@@ -21,8 +23,13 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export function renderMysteryPlayer(episode: Episode, navigate: (hash: string) => void): HTMLElement {
+  const wrapper = document.createElement("div");
+  wrapper.className = "screen-shell";
+  wrapper.appendChild(createHomeButton(navigate));
+
   const root = document.createElement("div");
   root.className = "mystery-player";
+  wrapper.appendChild(root);
 
   const saved = getState().episodeProgress[episode.id];
   let stepIndex = saved && !saved.completed && saved.currentStepIndex >= 0 ? saved.currentStepIndex : 0;
@@ -71,7 +78,7 @@ export function renderMysteryPlayer(episode: Episode, navigate: (hash: string) =
   }
 
   renderStep();
-  return root;
+  return wrapper;
 }
 
 interface StepCallbacks {
@@ -99,10 +106,7 @@ function wordCard(word: Word, onClick: () => void): HTMLButtonElement {
   const card = document.createElement("button");
   card.className = "word-choice";
   card.setAttribute("aria-label", word.en);
-  const emoji = document.createElement("div");
-  emoji.className = "word-choice-emoji";
-  emoji.textContent = word.emoji;
-  card.appendChild(emoji);
+  card.appendChild(renderWordVisual(word, "word-choice-emoji"));
   card.addEventListener("click", onClick);
   return card;
 }
@@ -114,10 +118,7 @@ function renderIntroStep(step: IntroStep, cb: StepCallbacks): HTMLElement {
   const el = document.createElement("div");
   el.className = "step-panel intro-step";
 
-  const emoji = document.createElement("div");
-  emoji.className = "big-emoji";
-  emoji.textContent = word.emoji;
-  el.appendChild(emoji);
+  el.appendChild(renderWordVisual(word, "big-emoji"));
 
   const target = document.createElement("div");
   target.className = "word-target";
@@ -136,27 +137,8 @@ function renderIntroStep(step: IntroStep, cb: StepCallbacks): HTMLElement {
   el.appendChild(hearBtn);
   speakEnglish(word.en, word.audio);
 
-  if (canRecord()) {
-    const sayBtn = document.createElement("button");
-    sayBtn.className = "btn-secondary";
-    sayBtn.textContent = "🎤 Say it";
-    let recorder: Recorder | null = null;
-
-    sayBtn.addEventListener("click", async () => {
-      if (!recorder) {
-        sayBtn.textContent = "⏹ Stop";
-        recorder = await startRecording().catch(() => null);
-        if (!recorder) sayBtn.textContent = "🎤 Say it";
-        return;
-      }
-      const blob = await recorder.stop();
-      recorder = null;
-      sayBtn.textContent = "🎤 Say it";
-      await saveRecording(word.id, blob);
-      playBlob(blob);
-    });
-    el.appendChild(sayBtn);
-  }
+  const sayIt = createSayItRecorder(word);
+  if (sayIt) el.appendChild(sayIt);
 
   const nextBtn = document.createElement("button");
   nextBtn.className = "btn-primary";
@@ -195,6 +177,7 @@ function renderChoiceStep(step: ChoiceStep | RiddleStep, cb: StepCallbacks): HTM
 
   const choiceGrid = document.createElement("div");
   choiceGrid.className = "choice-grid";
+  const allCards: HTMLButtonElement[] = [];
 
   for (const word of choices) {
     const card = wordCard(word, () => {
@@ -204,15 +187,26 @@ function renderChoiceStep(step: ChoiceStep | RiddleStep, cb: StepCallbacks): HTM
         const stars = awardStars(step.type, result);
         message.textContent = `Yes! +${stars} ⭐`;
         message.className = "feedback-message feedback-good celebrate";
-        card.disabled = true;
-        window.setTimeout(cb.onAdvance, 700);
+        playCorrectChime();
+        card.classList.add("correct-pop");
+        for (const other of allCards) {
+          other.disabled = true;
+          if (other !== card) other.classList.add("dim");
+        }
+        window.setTimeout(cb.onAdvance, 900);
       } else {
         missedOnce = true;
-        message.textContent = "Almost! Listen again.";
+        message.textContent = "🤔 Not quite — try again!";
         message.className = "feedback-message feedback-gentle";
+        playGentleBump();
+        card.classList.remove("wrong-shake");
+        // Force a reflow so re-adding the class restarts the animation on a repeat tap.
+        void card.offsetWidth;
+        card.classList.add("wrong-shake");
         speakEnglish(step.prompt);
       }
     });
+    allCards.push(card);
     choiceGrid.appendChild(card);
   }
   el.appendChild(choiceGrid);

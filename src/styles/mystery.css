@@ -42,6 +42,12 @@
   line-height: 1;
 }
 
+img.big-emoji {
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
+}
+
 .sentence-line {
   font-size: 20px;
   color: var(--text-dim);
@@ -74,8 +80,64 @@
   border-color: var(--lime);
 }
 
+.word-choice.dim {
+  opacity: 0.25;
+  transition: opacity 0.3s;
+}
+
+.word-choice.correct-pop {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 4px var(--lime), 0 0 24px 4px rgba(186, 255, 41, 0.5);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .word-choice.correct-pop {
+    animation: correctPop 0.5s ease;
+  }
+  .word-choice.wrong-shake {
+    animation: wrongShake 0.4s ease;
+  }
+}
+
+@keyframes correctPop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes wrongShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
 .word-choice-emoji {
   font-size: 48px;
+}
+
+img.word-choice-emoji {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
 }
 
 .feedback-message {
@@ -89,6 +151,79 @@
 }
 
 .feedback-gentle {
+  color: var(--text-dim);
+}
+
+.say-it-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.say-it-button {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 2px solid var(--purple-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.say-it-button.recording {
+  border-color: var(--pink);
+}
+
+.say-it-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(var(--pink) calc(var(--hold-progress, 0) * 360deg), transparent 0deg);
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+.say-it-button.recording .say-it-ring {
+  opacity: 1;
+}
+
+.say-it-meter {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--lime);
+  opacity: 0;
+  transform: scale(calc(0.3 + var(--level, 0) * 0.7));
+  transition: transform 0.05s linear;
+  pointer-events: none;
+}
+
+.say-it-button.recording .say-it-meter {
+  opacity: 0.35;
+}
+
+.say-it-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 26px;
+}
+
+.say-it-feedback {
+  min-height: 24px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.say-it-good {
+  color: var(--lime);
+}
+
+.say-it-quiet {
   color: var(--text-dim);
 }
 
