@@ -114,6 +114,23 @@ button:focus-visible {
   color: var(--lime);
 }
 
+.music-toggle {
+  position: fixed;
+  top: calc(var(--safe-top) + 8px);
+  inset-inline-end: 8px;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 2px solid var(--purple-dim);
+  color: var(--text);
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
 .hint-button {
   position: fixed;
   bottom: calc(var(--safe-bottom) + 16px);

@@ -28,6 +28,8 @@ export interface AppState {
   hintOverrides: Record<string, HintOverride>;
   /** Extra vocabulary the parent adds from songs/shows Romi loves — words only, never lyrics. */
   songWords: Array<{ id: string; en: string; he: string; he_reviewed: boolean }>;
+  /** Background music mute state, remembered across sessions. Sound is on by default. */
+  musicMuted: boolean;
 }
 
 export function defaultAppState(): AppState {
@@ -41,6 +43,7 @@ export function defaultAppState(): AppState {
     hintLog: {},
     hintOverrides: {},
     songWords: [],
+    musicMuted: false,
   };
 }
 

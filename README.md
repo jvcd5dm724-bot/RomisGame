@@ -115,13 +115,16 @@ repo is ever renamed.
 src/
   content/       JSON content (words, episodes, collectibles) + types + validation
   progress/      Leitner spaced repetition, streak, stars, localStorage persistence
-  audio/         speechSynthesis wiring, iOS audio unlock, record-and-compare mic
+  audio/         speechSynthesis wiring, iOS audio unlock, record-and-compare mic,
+                 looping background music with ducking during speech
   state/         app-wide store on top of progress/storage.ts
-  ui/            home screen, Mystery Channel player, hint button, parent screen
+  ui/            home screen, Mystery Channel player, hint button, parent screen,
+                 the persistent music mute/unmute toggle
   styles/        theme (Streetwear Pop palette), fonts, per-screen CSS
 tests/           vitest unit tests
 tests/e2e/       Playwright smoke tests
-scripts/         validate-content.ts (CI + tests), generate-icons.mjs (placeholder app icons)
+scripts/         validate-content.ts (CI + tests), generate-icons.mjs (placeholder
+                 app icons), generate-bg-music.py (synthesizes the background loop)
 ```
 
 ## Design notes
@@ -137,6 +140,12 @@ scripts/         validate-content.ts (CI + tests), generate-icons.mjs (placehold
   a hint drops it down (comes back sooner).
 - **Streak**: one free "rest day" per week; a missed day never erases stars,
   collectibles, or word progress.
+- **Background music**: a short, original, seamless loop (synthesized with
+  `scripts/generate-bg-music.py`, no external audio assets or licensing
+  concerns) plays on a first tap, on by default, with a visible 🔊/🔇 toggle
+  (top-right, persistent across screens) that's remembered across sessions.
+  It automatically ducks to a low volume while a word or hint is being
+  spoken, then fades back up.
 - **Original content only**: no Bluey or Billie Eilish characters, names,
   music, or likenesses anywhere in code or content — only tone inspiration,
   with original characters and chants.
