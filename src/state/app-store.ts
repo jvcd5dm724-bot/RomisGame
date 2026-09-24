@@ -74,6 +74,11 @@ export function approveHintOverride(contentId: string, he?: string, heHelp?: str
   persist();
 }
 
+export function setMusicMuted(muted: boolean): void {
+  state = { ...state, musicMuted: muted };
+  persist();
+}
+
 export function addSongWord(en: string, he: string): void {
   const id = `song-${en.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   state = {

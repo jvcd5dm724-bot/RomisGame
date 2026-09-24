@@ -1,3 +1,5 @@
+import { duckMusic, unduckMusic } from "./music";
+
 /**
  * iOS only plays audio after a user gesture. Call unlockAudio() inside the
  * first tap handler of the app, before anything else tries to speak.
@@ -24,6 +26,10 @@ function speak(text: string, lang: string): void {
   utterance.lang = lang;
   const voice = pickVoice(lang);
   if (voice) utterance.voice = voice;
+  // Duck the background music while she's being spoken to, so words stay clear.
+  utterance.onstart = () => duckMusic();
+  utterance.onend = () => unduckMusic();
+  utterance.onerror = () => unduckMusic();
   window.speechSynthesis.speak(utterance);
 }
 
@@ -31,7 +37,13 @@ function speak(text: string, lang: string): void {
 export function speakEnglish(text: string, audioFile?: string): void {
   if (audioFile) {
     const audio = new Audio(audioFile);
-    audio.play().catch(() => speak(text, "en-US"));
+    duckMusic();
+    audio.addEventListener("ended", unduckMusic);
+    audio.addEventListener("error", unduckMusic);
+    audio.play().catch(() => {
+      unduckMusic();
+      speak(text, "en-US");
+    });
     return;
   }
   speak(text, "en-US");

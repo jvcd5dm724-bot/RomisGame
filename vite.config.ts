@@ -33,7 +33,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,woff2,json}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,woff2,wav,json}"],
         // Content JSON must work offline after the first load.
         runtimeCaching: [
           {

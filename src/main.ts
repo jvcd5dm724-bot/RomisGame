@@ -6,18 +6,22 @@ import "./styles/parent.css";
 import { registerSW } from "virtual:pwa-register";
 
 import { unlockAudio } from "./audio/speech";
+import { startMusic } from "./audio/music";
 import { renderHomeScreen } from "./ui/home-screen";
 import { renderMysteryPlayer } from "./ui/mystery-player";
 import { renderParentScreen } from "./ui/parent-screen";
+import { mountMusicToggle } from "./ui/music-toggle";
 import { episodes } from "./content/index";
 import { getState } from "./state/app-store";
 
 registerSW({ immediate: true });
+mountMusicToggle();
 
 document.addEventListener(
   "pointerdown",
   () => {
     unlockAudio();
+    startMusic();
   },
   { once: true },
 );
