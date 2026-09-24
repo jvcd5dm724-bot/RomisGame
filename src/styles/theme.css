@@ -1,0 +1,166 @@
+/* Streetwear Pop palette: bold off-black canvas, electric purple / hot pink /
+   lime-green accents, inspired by the raccoon singer's oversized-hoodie vibe. */
+:root {
+  --bg: #121017;
+  --bg-raised: #1c1826;
+  --bg-tv-frame: #241f33;
+  --purple: #8b5cf6;
+  --purple-dim: #5b3aa0;
+  --pink: #ff3d81;
+  --lime: #baff29;
+  --cream: #fdf9ff;
+  --text: #f5f0ff;
+  --text-dim: #b8aecb;
+  --success: #baff29;
+  --danger: #ff7a59;
+
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+
+  --touch-min: 48px;
+  --touch-main: 56px;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  overscroll-behavior: none;
+  /* Portrait-only child app: block pull-to-refresh and rubber-banding. */
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: "Rubik", "Heebo", system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+  /* Block double-tap zoom inside games. */
+  touch-action: manipulation;
+  padding: max(var(--safe-top), 12px) max(var(--safe-right), 12px) max(var(--safe-bottom), 12px)
+    max(var(--safe-left), 12px);
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+[lang="he"] {
+  direction: rtl;
+  font-family: "Rubik", "Heebo", system-ui, sans-serif;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+  cursor: pointer;
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
+  border-radius: var(--radius-md);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  min-height: var(--touch-main);
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: var(--cream);
+  font-weight: 800;
+  font-size: 20px;
+  padding: 0 24px;
+  box-shadow: 0 6px 0 var(--purple-dim);
+}
+
+.btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--purple-dim);
+}
+
+.btn-secondary {
+  min-height: var(--touch-main);
+  background: var(--bg-raised);
+  color: var(--text);
+  font-weight: 600;
+  padding: 0 20px;
+  border: 2px solid var(--purple-dim);
+}
+
+.word-target {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--lime);
+}
+
+.hint-button {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 16px);
+  inset-inline-end: 16px;
+  width: var(--touch-main);
+  height: var(--touch-main);
+  border-radius: 50%;
+  background: var(--purple);
+  color: var(--cream);
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 50;
+}
+
+.hint-panel {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 84px);
+  inset-inline-end: 16px;
+  max-width: min(80vw, 320px);
+  background: var(--bg-raised);
+  border: 2px solid var(--purple);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-size: 19px;
+  z-index: 51;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .celebrate {
+    animation: pop 0.4s ease;
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}

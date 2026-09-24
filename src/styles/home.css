@@ -1,0 +1,133 @@
+.home-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+  overflow-y: auto;
+}
+
+.home-header {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.stat {
+  background: var(--bg-raised);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 800;
+  font-size: 20px;
+  border: 2px solid var(--purple-dim);
+}
+
+.tv-frame {
+  background: var(--bg-tv-frame);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 6px solid #33294f;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.guide-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 20px;
+  padding-bottom: 12px;
+}
+
+.channel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.channel-card {
+  position: relative;
+  aspect-ratio: 1 / 0.85;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.channel-active {
+  background: linear-gradient(150deg, var(--purple), var(--pink));
+}
+
+.channel-static {
+  background: #1a1622;
+  color: var(--text-dim);
+}
+
+.channel-emoji {
+  font-size: 40px;
+}
+
+.channel-label {
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  z-index: 1;
+}
+
+.channel-soon {
+  font-size: 13px;
+  color: var(--text-dim);
+  z-index: 1;
+}
+
+.tv-static {
+  position: absolute;
+  inset: 0;
+  opacity: 0.25;
+  background-image: repeating-linear-gradient(
+    0deg,
+    #fff 0px,
+    transparent 1px,
+    transparent 2px,
+    #fff 3px
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.static-flicker .tv-static {
+  animation: flicker 0.5s steps(6);
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.progress-line {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+.parent-gate-link {
+  position: fixed;
+  top: calc(var(--safe-top) + 8px);
+  inset-inline-start: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 20px;
+  opacity: 0.6;
+}

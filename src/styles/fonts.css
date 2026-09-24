@@ -1,0 +1,50 @@
+/* Self-hosted Rubik: a rounded sans-serif with distinct Hebrew + Latin glyphs
+   (I and l are visually different). No runtime request to Google Fonts. */
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/RomisGame/fonts/rubik-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2122;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/RomisGame/fonts/rubik-400-hebrew.woff2") format("woff2");
+  unicode-range: U+0590-05FF, U+20AA, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/RomisGame/fonts/rubik-600-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2122;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/RomisGame/fonts/rubik-600-hebrew.woff2") format("woff2");
+  unicode-range: U+0590-05FF, U+20AA, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/RomisGame/fonts/rubik-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2122;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/RomisGame/fonts/rubik-800-hebrew.woff2") format("woff2");
+  unicode-range: U+0590-05FF, U+20AA, U+FB1D-FB4F;
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "animal-cat",
+    "en": "cat",
+    "category": "animals",
+    "emoji": "🐱",
+    "he": "חתול",
+    "he_help": "מצאי את החתול.",
+    "he_reviewed": false
+  },
+  {
+    "id": "animal-dog",
+    "en": "dog",
+    "category": "animals",
+    "emoji": "🐶",
+    "he": "כלב",
+    "he_help": "מצאי את הכלב.",
+    "he_reviewed": false
+  },
+  {
+    "id": "animal-raccoon",
+    "en": "raccoon",
+    "category": "animals",
+    "emoji": "🦝",
+    "he": "דביבון",
+    "he_help": "מצאי את הדביבון.",
+    "he_reviewed": false
+  },
+  {
+    "id": "animal-bird",
+    "en": "bird",
+    "category": "animals",
+    "emoji": "🐦",
+    "he": "ציפור",
+    "he_help": "מצאי את הציפור.",
+    "he_reviewed": false
+  }
+]

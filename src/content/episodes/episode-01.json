@@ -1,0 +1,67 @@
+{
+  "id": "episode-01",
+  "order": 1,
+  "title": "The Case of the Missing Cookie",
+  "he": "התיק של העוגייה שנעלמה",
+  "he_help": "עזרי לדביבון הבלש למצוא מי לקח את העוגייה!",
+  "he_reviewed": false,
+  "rewardCollectibleId": "mask-detective",
+  "steps": [
+    {
+      "id": "ep01-s1",
+      "type": "intro",
+      "wordId": "food-cookie",
+      "sentenceTemplate": "I see a ___.",
+      "he": "עוגייה",
+      "he_help": "הקשיבי למילה, ואז תגידי אותה בקול.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep01-s2",
+      "type": "intro",
+      "wordId": "color-red",
+      "sentenceTemplate": "The ___ paw print.",
+      "he": "אדום",
+      "he_help": "הקשיבי למילה, ואז תגידי אותה בקול.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep01-s3",
+      "type": "choice",
+      "prompt": "Find the RED clue!",
+      "wordId": "color-red",
+      "decoyWordIds": ["color-blue", "color-green"],
+      "he": "מצאי את הרמז האדום",
+      "he_help": "לחצי על התמונה שהצבע שלה אדום.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep01-s4",
+      "type": "intro",
+      "wordId": "animal-cat",
+      "sentenceTemplate": "This is my ___.",
+      "he": "חתול",
+      "he_help": "הקשיבי למילה, ואז תגידי אותה בקול.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep01-s5",
+      "type": "riddle",
+      "prompt": "The red cat has the cookie!",
+      "wordId": "animal-cat",
+      "decoyWordIds": ["animal-dog", "animal-bird"],
+      "he": "לחתול האדום יש את העוגייה!",
+      "he_help": "לחצי על החתול כדי לפתור את התעלומה.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep01-s6",
+      "type": "unlock",
+      "rewardText": "Case closed! Great job, detective!",
+      "cliffhanger": "But wait... who is knocking on the theater door?",
+      "he": "התיק נסגר! עבודה מעולה, בלשית!",
+      "he_help": "אבל רגע... מי דופק על דלת התיאטרון?",
+      "he_reviewed": false
+    }
+  ]
+}

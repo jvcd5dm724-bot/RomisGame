@@ -1,0 +1,29 @@
+[
+  {
+    "id": "food-cookie",
+    "en": "cookie",
+    "category": "food",
+    "emoji": "🍪",
+    "he": "עוגייה",
+    "he_help": "מצאי את העוגייה.",
+    "he_reviewed": false
+  },
+  {
+    "id": "food-apple",
+    "en": "apple",
+    "category": "food",
+    "emoji": "🍎",
+    "he": "תפוח",
+    "he_help": "מצאי את התפוח.",
+    "he_reviewed": false
+  },
+  {
+    "id": "food-milk",
+    "en": "milk",
+    "category": "food",
+    "emoji": "🥛",
+    "he": "חלב",
+    "he_help": "מצאי את החלב.",
+    "he_reviewed": false
+  }
+]
