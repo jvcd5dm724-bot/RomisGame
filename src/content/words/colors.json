@@ -1,0 +1,38 @@
+[
+  {
+    "id": "color-red",
+    "en": "red",
+    "category": "colors",
+    "emoji": "🔴",
+    "he": "אדום",
+    "he_help": "מצאי את הצבע האדום.",
+    "he_reviewed": false
+  },
+  {
+    "id": "color-blue",
+    "en": "blue",
+    "category": "colors",
+    "emoji": "🔵",
+    "he": "כחול",
+    "he_help": "מצאי את הצבע הכחול.",
+    "he_reviewed": false
+  },
+  {
+    "id": "color-green",
+    "en": "green",
+    "category": "colors",
+    "emoji": "🟢",
+    "he": "ירוק",
+    "he_help": "מצאי את הצבע הירוק.",
+    "he_reviewed": false
+  },
+  {
+    "id": "color-yellow",
+    "en": "yellow",
+    "category": "colors",
+    "emoji": "🟡",
+    "he": "צהוב",
+    "he_help": "מצאי את הצבע הצהוב.",
+    "he_reviewed": false
+  }
+]
