@@ -1,12 +1,25 @@
-import type { ChoiceStep, Episode, EpisodeStep, IntroStep, RiddleStep, UnlockStep, Word } from "../content/types";
+import type {
+  ChoiceStep,
+  Episode,
+  EpisodeStep,
+  IntroStep,
+  ReadingStep,
+  RecordingChallengeStep,
+  RiddleStep,
+  UnlockStep,
+  Word,
+} from "../content/types";
 import { getWord } from "../content/index";
 import { withHintOverride } from "../content/overrides";
 import { createHintButton, type HintButtonHandle } from "./hint-button";
 import { speakEnglish } from "../audio/speech";
-import { canRecord, playBlob, startRecording, type Recorder } from "../audio/record";
-import { saveRecording } from "../audio/recordings";
 import { awardStars, getState, reviewWordResult, setEpisodeStepIndex, completeEpisode } from "../state/app-store";
 import { todayIso } from "../util/date";
+import { createHomeButton } from "./home-button";
+import { createSayItRecorder } from "./say-it-recorder";
+import { createRecordingChallenge } from "./recording-challenge";
+import { renderWordVisual } from "./word-visual";
+import { playCorrectChime, playGentleBump } from "../audio/sfx";
 
 function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr];
@@ -21,8 +34,13 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export function renderMysteryPlayer(episode: Episode, navigate: (hash: string) => void): HTMLElement {
+  const wrapper = document.createElement("div");
+  wrapper.className = "screen-shell";
+  wrapper.appendChild(createHomeButton(navigate));
+
   const root = document.createElement("div");
   root.className = "mystery-player";
+  wrapper.appendChild(root);
 
   const saved = getState().episodeProgress[episode.id];
   let stepIndex = saved && !saved.completed && saved.currentStepIndex >= 0 ? saved.currentStepIndex : 0;
@@ -40,6 +58,7 @@ export function renderMysteryPlayer(episode: Episode, navigate: (hash: string) =
       dots.appendChild(dot);
     });
     root.appendChild(dots);
+    root.appendChild(renderCaseFile(episode, stepIndex));
 
     const step = episode.steps[stepIndex];
     if (!step) return;
@@ -71,7 +90,40 @@ export function renderMysteryPlayer(episode: Episode, navigate: (hash: string) =
   }
 
   renderStep();
-  return root;
+  return wrapper;
+}
+
+/** Words collected so far this run, from intro/choice steps already passed — the "case file". */
+function collectedWordIds(episode: Episode, uptoIndex: number): string[] {
+  const ids: string[] = [];
+  for (let i = 0; i < uptoIndex; i++) {
+    const step = episode.steps[i];
+    if (step && (step.type === "intro" || step.type === "choice") && !ids.includes(step.wordId)) {
+      ids.push(step.wordId);
+    }
+  }
+  return ids;
+}
+
+function renderCaseFile(episode: Episode, stepIndex: number): HTMLElement {
+  const ids = collectedWordIds(episode, stepIndex);
+  const strip = document.createElement("div");
+  strip.className = "case-file";
+  if (ids.length === 0) return strip;
+
+  const label = document.createElement("span");
+  label.className = "case-file-label";
+  label.textContent = "📋";
+  strip.appendChild(label);
+
+  for (const id of ids) {
+    const word = getWord(id);
+    const chip = document.createElement("span");
+    chip.className = "case-file-chip";
+    chip.textContent = `${word.emoji} ${word.en}`;
+    strip.appendChild(chip);
+  }
+  return strip;
 }
 
 interface StepCallbacks {
@@ -92,6 +144,10 @@ function renderStepByType(step: EpisodeStep, cb: StepCallbacks): HTMLElement {
       return renderChoiceStep(step, cb);
     case "unlock":
       return renderUnlockStep(step, cb);
+    case "reading":
+      return renderReadingStep(step, cb);
+    case "recording-challenge":
+      return renderRecordingChallengeStep(step, cb);
   }
 }
 
@@ -99,10 +155,7 @@ function wordCard(word: Word, onClick: () => void): HTMLButtonElement {
   const card = document.createElement("button");
   card.className = "word-choice";
   card.setAttribute("aria-label", word.en);
-  const emoji = document.createElement("div");
-  emoji.className = "word-choice-emoji";
-  emoji.textContent = word.emoji;
-  card.appendChild(emoji);
+  card.appendChild(renderWordVisual(word, "word-choice-emoji"));
   card.addEventListener("click", onClick);
   return card;
 }
@@ -114,10 +167,7 @@ function renderIntroStep(step: IntroStep, cb: StepCallbacks): HTMLElement {
   const el = document.createElement("div");
   el.className = "step-panel intro-step";
 
-  const emoji = document.createElement("div");
-  emoji.className = "big-emoji";
-  emoji.textContent = word.emoji;
-  el.appendChild(emoji);
+  el.appendChild(renderWordVisual(word, "big-emoji"));
 
   const target = document.createElement("div");
   target.className = "word-target";
@@ -136,27 +186,8 @@ function renderIntroStep(step: IntroStep, cb: StepCallbacks): HTMLElement {
   el.appendChild(hearBtn);
   speakEnglish(word.en, word.audio);
 
-  if (canRecord()) {
-    const sayBtn = document.createElement("button");
-    sayBtn.className = "btn-secondary";
-    sayBtn.textContent = "🎤 Say it";
-    let recorder: Recorder | null = null;
-
-    sayBtn.addEventListener("click", async () => {
-      if (!recorder) {
-        sayBtn.textContent = "⏹ Stop";
-        recorder = await startRecording().catch(() => null);
-        if (!recorder) sayBtn.textContent = "🎤 Say it";
-        return;
-      }
-      const blob = await recorder.stop();
-      recorder = null;
-      sayBtn.textContent = "🎤 Say it";
-      await saveRecording(word.id, blob);
-      playBlob(blob);
-    });
-    el.appendChild(sayBtn);
-  }
+  const sayIt = createSayItRecorder(word);
+  if (sayIt) el.appendChild(sayIt);
 
   const nextBtn = document.createElement("button");
   nextBtn.className = "btn-primary";
@@ -195,6 +226,7 @@ function renderChoiceStep(step: ChoiceStep | RiddleStep, cb: StepCallbacks): HTM
 
   const choiceGrid = document.createElement("div");
   choiceGrid.className = "choice-grid";
+  const allCards: HTMLButtonElement[] = [];
 
   for (const word of choices) {
     const card = wordCard(word, () => {
@@ -204,15 +236,26 @@ function renderChoiceStep(step: ChoiceStep | RiddleStep, cb: StepCallbacks): HTM
         const stars = awardStars(step.type, result);
         message.textContent = `Yes! +${stars} ⭐`;
         message.className = "feedback-message feedback-good celebrate";
-        card.disabled = true;
-        window.setTimeout(cb.onAdvance, 700);
+        playCorrectChime();
+        card.classList.add("correct-pop");
+        for (const other of allCards) {
+          other.disabled = true;
+          if (other !== card) other.classList.add("dim");
+        }
+        window.setTimeout(cb.onAdvance, 900);
       } else {
         missedOnce = true;
-        message.textContent = "Almost! Listen again.";
+        message.textContent = "🤔 Not quite — try again!";
         message.className = "feedback-message feedback-gentle";
+        playGentleBump();
+        card.classList.remove("wrong-shake");
+        // Force a reflow so re-adding the class restarts the animation on a repeat tap.
+        void card.offsetWidth;
+        card.classList.add("wrong-shake");
         speakEnglish(step.prompt);
       }
     });
+    allCards.push(card);
     choiceGrid.appendChild(card);
   }
   el.appendChild(choiceGrid);
@@ -252,6 +295,98 @@ function renderUnlockStep(step: UnlockStep, cb: StepCallbacks): HTMLElement {
   homeBtn.textContent = "Back to TV 📺";
   homeBtn.addEventListener("click", cb.onBackHome);
   el.appendChild(homeBtn);
+
+  return el;
+}
+
+function renderReadingStep(step: ReadingStep, cb: StepCallbacks): HTMLElement {
+  cb.mountHint(step);
+
+  const el = document.createElement("div");
+  el.className = "step-panel reading-step";
+
+  const label = document.createElement("div");
+  label.className = "reading-label";
+  label.textContent = "📖 Read it";
+  el.appendChild(label);
+
+  const sentenceEl = document.createElement("div");
+  sentenceEl.className = "reading-sentence";
+  sentenceEl.textContent = step.sentence;
+  el.appendChild(sentenceEl);
+
+  const translationEl = document.createElement("div");
+  translationEl.className = "reading-translation";
+  translationEl.hidden = true;
+  const bdi = document.createElement("bdi");
+  bdi.setAttribute("lang", "he");
+  bdi.setAttribute("dir", "rtl");
+  bdi.textContent = step.translation;
+  translationEl.appendChild(bdi);
+  el.appendChild(translationEl);
+
+  speakEnglish(step.sentence);
+
+  const buttonRow = document.createElement("div");
+  buttonRow.className = "reading-buttons";
+
+  const hearBtn = document.createElement("button");
+  hearBtn.className = "btn-secondary";
+  hearBtn.textContent = "🔊 Hear it";
+  hearBtn.addEventListener("click", () => speakEnglish(step.sentence));
+  buttonRow.appendChild(hearBtn);
+
+  const translateBtn = document.createElement("button");
+  translateBtn.className = "btn-secondary";
+  translateBtn.textContent = "🔤 Translate";
+  translateBtn.addEventListener("click", () => {
+    translationEl.hidden = !translationEl.hidden;
+    translateBtn.textContent = translationEl.hidden ? "🔤 Translate" : "🔤 Hide";
+  });
+  buttonRow.appendChild(translateBtn);
+  el.appendChild(buttonRow);
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "btn-primary";
+  nextBtn.textContent = "Continue ▶";
+  nextBtn.addEventListener("click", () => {
+    awardStars(step.type, "correct");
+    cb.onAdvance();
+  });
+  el.appendChild(nextBtn);
+
+  return el;
+}
+
+function renderRecordingChallengeStep(step: RecordingChallengeStep, cb: StepCallbacks): HTMLElement {
+  cb.mountHint(step);
+
+  const el = document.createElement("div");
+  el.className = "step-panel intro-step";
+
+  const badge = document.createElement("div");
+  badge.className = "big-emoji";
+  badge.textContent = "🎙️";
+  el.appendChild(badge);
+
+  const promptEl = document.createElement("div");
+  promptEl.className = "clue-prompt";
+  promptEl.textContent = step.prompt;
+  el.appendChild(promptEl);
+  speakEnglish(step.prompt);
+
+  const hearBtn = document.createElement("button");
+  hearBtn.className = "btn-secondary";
+  hearBtn.textContent = "🔊 Hear it";
+  hearBtn.addEventListener("click", () => speakEnglish(step.prompt));
+  el.appendChild(hearBtn);
+
+  el.appendChild(
+    createRecordingChallenge(() => {
+      awardStars(step.type, "correct");
+      cb.onAdvance();
+    }),
+  );
 
   return el;
 }

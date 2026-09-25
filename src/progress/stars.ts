@@ -7,6 +7,8 @@ const BASE_STARS: Record<EpisodeStep["type"], number> = {
   choice: 1,
   riddle: 2,
   unlock: 3,
+  reading: 2,
+  "recording-challenge": 2,
 };
 
 export function starsForStep(stepType: EpisodeStep["type"], result: ReviewResult): number {

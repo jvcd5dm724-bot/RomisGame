@@ -1,10 +1,14 @@
 import bgLoopUrl from "../assets/audio/bg-loop.wav";
 import { getState, setMusicMuted } from "../state/app-store";
 
-const NORMAL_VOLUME = 0.35;
-const DUCKED_VOLUME = 0.08;
-const FADE_MS = 250;
-
+/**
+ * iOS Safari ignores HTMLMediaElement.volume set from JS (it's wired to the
+ * hardware volume buttons only, and the setter silently no-ops — no error).
+ * So volume fades never work on the one device this app targets. Instead we
+ * control on/off with the boolean `.muted` property (which iOS *does*
+ * respect) and "duck" by pausing/resuming the track around speech, rather
+ * than lowering its volume.
+ */
 let audio: HTMLAudioElement | null = null;
 let ducked = false;
 
@@ -12,36 +16,24 @@ function getAudio(): HTMLAudioElement {
   if (!audio) {
     audio = new Audio(bgLoopUrl);
     audio.loop = true;
-    audio.volume = 0;
+    audio.muted = getState().musicMuted;
   }
   return audio;
 }
 
-function fadeTo(target: number) {
+function applyPlaybackState() {
   const el = getAudio();
-  const start = el.volume;
-  const startTime = performance.now();
-  function step(now: number) {
-    const t = Math.min(1, (now - startTime) / FADE_MS);
-    el.volume = start + (target - start) * t;
-    if (t < 1) requestAnimationFrame(step);
+  el.muted = getState().musicMuted;
+  if (ducked || getState().musicMuted) {
+    if (!el.paused) el.pause();
+  } else if (el.paused) {
+    el.play().catch(() => {});
   }
-  requestAnimationFrame(step);
-}
-
-function targetVolume(): number {
-  if (getState().musicMuted) return 0;
-  return ducked ? DUCKED_VOLUME : NORMAL_VOLUME;
 }
 
 /** Call once, inside the first user-gesture handler (iOS only plays audio after a tap). */
 export function startMusic(): void {
-  const el = getAudio();
-  el.play()
-    .then(() => fadeTo(targetVolume()))
-    .catch(() => {
-      // Autoplay/gesture requirements not met yet — a later toggleMusic() retry will succeed.
-    });
+  applyPlaybackState();
 }
 
 export function isMusicMuted(): boolean {
@@ -51,18 +43,17 @@ export function isMusicMuted(): boolean {
 export function toggleMusic(): boolean {
   const next = !getState().musicMuted;
   setMusicMuted(next);
-  if (!next) getAudio().play().catch(() => {});
-  fadeTo(targetVolume());
+  applyPlaybackState();
   return next;
 }
 
-/** Softly lower the music while a voice line plays, so words stay clear. */
+/** Briefly pause the music while a voice line plays, so words stay clear. */
 export function duckMusic(): void {
   ducked = true;
-  fadeTo(targetVolume());
+  applyPlaybackState();
 }
 
 export function unduckMusic(): void {
   ducked = false;
-  fadeTo(targetVolume());
+  applyPlaybackState();
 }

@@ -80,15 +80,27 @@ full example) and import it into the `episodes` array in
 `src/content/index.ts`. An episode is a chain of steps:
 
 - `intro` — teaches one new word (hear it, see it, say it into the mic,
-  continue).
+  continue). Any `intro`/`choice` step's word is automatically added to the
+  on-screen "case file" clue strip for the rest of that episode.
 - `choice` — a clue: pick the right word among 2 decoys. Keep the English
   prompt to 6 words or fewer.
-- `riddle` — the final riddle of the episode, same shape as `choice`.
+- `riddle` — the final riddle of the episode, same shape as `choice`. Write
+  its `prompt` to explicitly reuse 1–2 words already in the case file (e.g.
+  "Which dog has the BLUE ball?") so the payoff actually uses what she
+  collected.
+- `reading` — a short sentence to read, with `sentence` (English) and
+  `translation` (Hebrew) — the dedicated Translate button toggles the whole
+  sentence's Hebrew, separate from the per-word hint button.
+- `recording-challenge` — a graded speaking challenge (`prompt`): she must
+  record herself saying it clearly to advance. Never a hard wall — after a
+  couple of quiet tries a "Continue anyway" fallback appears.
 - `unlock` — the win screen: reward text + a cliffhanger for the next
   episode, awards the episode's collectible.
 
-Every step needs `he` and `he_help`. Episodes should be short: 5–7 steps,
-always ending on a win.
+Every step needs `he` and `he_help`. See `episode-02.json` for a harder
+episode (full sentences, a reading step, a recording challenge, case-file
+payoff) versus `episode-01.json`'s gentler single-word on-ramp — vary
+difficulty across episodes rather than within one.
 
 ## Deploying
 
@@ -149,3 +161,11 @@ scripts/         validate-content.ts (CI + tests), generate-icons.mjs (placehold
 - **Original content only**: no Bluey or Billie Eilish characters, names,
   music, or likenesses anywhere in code or content — only tone inspiration,
   with original characters and chants.
+
+## Credits
+
+- Raccoon illustration (`src/assets/images/raccoon.svg`, used for the "raccoon"
+  word card, the home-screen guide, and the app icons/favicon): "raccoon"
+  (U+1F99D) from [OpenMoji](https://openmoji.org/library/emoji-1F99D/) — the
+  open-source emoji and icon project — licensed under
+  [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#).

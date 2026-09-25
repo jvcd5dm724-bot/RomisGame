@@ -114,6 +114,50 @@ button:focus-visible {
   color: var(--lime);
 }
 
+/* Reusable press-and-hold button (used for the parent gate): a ring that
+   visibly fills as the hold progresses, so the hold is never invisible. */
+.hold-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(var(--lime) calc(var(--hold-progress, 0) * 360deg), transparent 0deg);
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+button.holding .hold-ring {
+  opacity: 1;
+}
+
+.hold-label {
+  position: relative;
+  z-index: 1;
+}
+
+/* Layout-transparent wrapper so a persistent overlay button (home, hint, …)
+   can sit alongside a screen's real flex child without disturbing #app's layout. */
+.screen-shell {
+  display: contents;
+}
+
+.home-button {
+  position: fixed;
+  top: calc(var(--safe-top) + 8px);
+  inset-inline-start: 8px;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 2px solid var(--purple-dim);
+  color: var(--text);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
 .music-toggle {
   position: fixed;
   top: calc(var(--safe-top) + 8px);

@@ -6,5 +6,13 @@
     "slot": "mask",
     "he": "מסכת בלש",
     "he_reviewed": false
+  },
+  {
+    "id": "prop-magnifying-glass",
+    "name": "Magnifying Glass",
+    "emoji": "🔍",
+    "slot": "prop",
+    "he": "זכוכית מגדלת",
+    "he_reviewed": false
   }
 ]
