@@ -1,0 +1,84 @@
+{
+  "id": "episode-02",
+  "order": 2,
+  "title": "The Blue Ball Mystery",
+  "he": "התעלומה של הכדור הכחול",
+  "he_help": "עזרי לכלב למצוא את הכדור הכחול שלו!",
+  "he_reviewed": false,
+  "rewardCollectibleId": "prop-magnifying-glass",
+  "steps": [
+    {
+      "id": "ep02-s1",
+      "type": "intro",
+      "wordId": "animal-dog",
+      "sentenceTemplate": "I see a ___ at the door!",
+      "he": "כלב",
+      "he_help": "הקשיבי למילה, ואז תגידי אותה בקול.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep02-s2",
+      "type": "intro",
+      "wordId": "color-blue",
+      "sentenceTemplate": "The ___ ball is gone!",
+      "he": "כחול",
+      "he_help": "הקשיבי למילה, ואז תגידי אותה בקול.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep02-s3",
+      "type": "intro",
+      "wordId": "toy-ball",
+      "sentenceTemplate": "I have a ___.",
+      "he": "כדור",
+      "he_help": "הקשיבי למילה, ואז תגידי אותה בקול.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep02-s4",
+      "type": "reading",
+      "sentence": "I have a blue ball.",
+      "translation": "יש לי כדור כחול.",
+      "he": "משפט לקריאה",
+      "he_help": "קראי את המשפט בקול. אפשר ללחוץ על 'תרגום' אם צריך עזרה.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep02-s5",
+      "type": "choice",
+      "prompt": "Find the BLUE clue!",
+      "wordId": "color-blue",
+      "decoyWordIds": ["color-red", "color-green"],
+      "he": "מצאי את הרמז הכחול",
+      "he_help": "לחצי על התמונה שהצבע שלה כחול.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep02-s6",
+      "type": "recording-challenge",
+      "prompt": "I have a blue ball.",
+      "he": "תגידי את המשפט בקול",
+      "he_help": "הקליטי את עצמך אומרת: I have a blue ball.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep02-s7",
+      "type": "riddle",
+      "prompt": "Which dog has the BLUE ball?",
+      "wordId": "animal-dog",
+      "decoyWordIds": ["animal-cat", "animal-bird"],
+      "he": "לאיזה כלב יש את הכדור הכחול?",
+      "he_help": "לחצי על הכלב כדי לפתור את התעלומה.",
+      "he_reviewed": false
+    },
+    {
+      "id": "ep02-s8",
+      "type": "unlock",
+      "rewardText": "Ball returned! Great detective work!",
+      "cliffhanger": "But look... a mysterious note falls from the dog's collar!",
+      "he": "הכדור הוחזר! עבודת בלשות מעולה!",
+      "he_help": "אבל רגע... פתק מסתורי נופל מהקולר של הכלב!",
+      "he_reviewed": false
+    }
+  ]
+}

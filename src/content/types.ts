@@ -19,6 +19,7 @@ export type WordCategory =
   | "body"
   | "verbs"
   | "greetings"
+  | "toys"
   | "song";
 
 export interface Word extends HebrewHint {
@@ -66,7 +67,21 @@ export interface UnlockStep extends StepBase {
   cliffhanger: string;
 }
 
-export type EpisodeStep = IntroStep | ChoiceStep | RiddleStep | UnlockStep;
+/** A short reading passage — practice reading a real sentence, with a dedicated Hebrew translate toggle (separate from the per-word hint). */
+export interface ReadingStep extends StepBase {
+  type: "reading";
+  sentence: string;
+  /** Hebrew translation of the whole sentence, revealed by the Translate button. */
+  translation: string;
+}
+
+/** A graded speaking challenge: she must say the phrase aloud clearly to advance (a gentle fallback appears after repeated tries — never a hard wall). */
+export interface RecordingChallengeStep extends StepBase {
+  type: "recording-challenge";
+  prompt: string;
+}
+
+export type EpisodeStep = IntroStep | ChoiceStep | RiddleStep | UnlockStep | ReadingStep | RecordingChallengeStep;
 
 export interface Episode extends HebrewHint {
   id: string;
