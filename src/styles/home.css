@@ -40,8 +40,8 @@
 }
 
 .guide-avatar {
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
 }
 
@@ -74,8 +74,8 @@
 }
 
 .channel-emoji {
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
   object-fit: contain;
   border-radius: 50%;
 }
