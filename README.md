@@ -165,7 +165,11 @@ scripts/         validate-content.ts (CI + tests), generate-icons.mjs (placehold
 ## Credits
 
 - Raccoon illustration (`src/assets/images/raccoon.svg`, used for the "raccoon"
-  word card, the home-screen guide, and the app icons/favicon): "raccoon"
-  (U+1F99D) from [OpenMoji](https://openmoji.org/library/emoji-1F99D/) — the
-  open-source emoji and icon project — licensed under
+  word card and the app icons/favicon): "raccoon" (U+1F99D) from
+  [OpenMoji](https://openmoji.org/library/emoji-1F99D/) — the open-source
+  emoji and icon project — licensed under
   [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#).
+- Channel mascot badges (`src/assets/images/mascots/*.png` — Detective,
+  Singer, Dancer, Painter, Reader; used for the home-screen guide and each
+  channel tile): original character art provided directly by the project
+  owner.

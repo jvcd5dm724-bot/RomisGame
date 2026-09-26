@@ -74,7 +74,10 @@
 }
 
 .channel-emoji {
-  font-size: 40px;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 50%;
 }
 
 .channel-label {

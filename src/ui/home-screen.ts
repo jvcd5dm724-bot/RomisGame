@@ -7,16 +7,16 @@ interface Channel {
   id: string;
   name: string;
   he: string;
-  emoji: string;
+  image: string;
   active: boolean;
 }
 
 const CHANNELS: Channel[] = [
-  { id: "mystery", name: "Mystery Channel", he: "ערוץ התעלומות", emoji: "🕵️", active: true },
-  { id: "stage", name: "Stage Channel", he: "ערוץ הבמה", emoji: "🎤", active: false },
-  { id: "move", name: "Move Channel", he: "ערוץ התנועה", emoji: "💃", active: false },
-  { id: "art", name: "Art Channel", he: "ערוץ האמנות", emoji: "🎨", active: false },
-  { id: "journal", name: "Story Journal", he: "יומן הסיפורים", emoji: "📓", active: false },
+  { id: "mystery", name: "Mystery Channel", he: "ערוץ התעלומות", image: "mascot-detective", active: true },
+  { id: "stage", name: "Stage Channel", he: "ערוץ הבמה", image: "mascot-singer", active: false },
+  { id: "move", name: "Move Channel", he: "ערוץ התנועה", image: "mascot-dancer", active: false },
+  { id: "art", name: "Art Channel", he: "ערוץ האמנות", image: "mascot-painter", active: false },
+  { id: "journal", name: "Story Journal", he: "יומן הסיפורים", image: "mascot-reader", active: false },
 ];
 
 export function renderHomeScreen(navigate: (hash: string) => void): HTMLElement {
@@ -40,12 +40,9 @@ export function renderHomeScreen(navigate: (hash: string) => void): HTMLElement 
   guide.className = "guide-line";
   const guideAvatar = document.createElement("img");
   guideAvatar.className = "guide-avatar";
-  guideAvatar.src = contentImages.raccoon!;
+  guideAvatar.src = contentImages["mascot-detective"]!;
   guideAvatar.alt = "Raccoon detective";
   guide.appendChild(guideAvatar);
-  const guideDetective = document.createElement("span");
-  guideDetective.textContent = "🕵️";
-  guide.appendChild(guideDetective);
   const guideText = document.createElement("span");
   guideText.textContent = "Pick a channel!";
   guide.appendChild(guideText);
@@ -59,9 +56,10 @@ export function renderHomeScreen(navigate: (hash: string) => void): HTMLElement 
     card.className = channel.active ? "channel-card channel-active" : "channel-card channel-static";
     card.setAttribute("aria-label", channel.name);
 
-    const emoji = document.createElement("div");
+    const emoji = document.createElement("img");
     emoji.className = "channel-emoji";
-    emoji.textContent = channel.emoji;
+    emoji.src = contentImages[channel.image]!;
+    emoji.alt = channel.name;
     card.appendChild(emoji);
 
     const label = document.createElement("div");
